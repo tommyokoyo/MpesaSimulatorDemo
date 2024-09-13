@@ -1,7 +1,7 @@
 package com.openhub.mpesasimulatordemo.services;
 
 import com.openhub.mpesasimulatordemo.Utilities.RabbitMQConfig;
-import com.openhub.mpesasimulatordemo.models.MpesaCallbackMessage;
+import com.openhub.mpesasimulatordemo.models.StkCallbackMessage;
 import com.openhub.mpesasimulatordemo.models.TransactionMessage;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
@@ -19,27 +19,30 @@ public class MpesaServices {
     public void lipaNaMpesaDemo(TransactionMessage transactionMessage) {
         System.out.println("Transaction " + transactionMessage.getTransactionId() + " retrieved");
         if (transactionMessage.getPhoneNumber().equals("+254716210475")) {
-            MpesaCallbackMessage mpesaCallbackMessage = new MpesaCallbackMessage();
-            mpesaCallbackMessage.setMerchantRequestID("29115-34620561-1");
-            mpesaCallbackMessage.setTransactionID(transactionMessage.getTransactionId());
-            mpesaCallbackMessage.setCheckoutRequestID("ws_CO_191220191020363925");
-            mpesaCallbackMessage.setTransactionAmount(transactionMessage.getAmount());
-            mpesaCallbackMessage.setResultCode(0);
-            mpesaCallbackMessage.setResultDesc("The service request is processed successfully.");
+            StkCallbackMessage stkCallbackMessage = new StkCallbackMessage().createCallbackMessage(
+                    "29115-34620561-1",
+                    "ws_CO_191220191020363925",
+                    0,
+                    "The service request is processed successfully.",
+                    0.0,
+                    transactionMessage.getPhoneNumber(),
+                    "",
+                    ""
+            );
 
-            System.out.println("Callback is:  " + mpesaCallbackMessage);
-            rabbitTemplate.convertAndSend(RabbitMQConfig.EXCHANGE, RabbitMQConfig.CALLBACK_QUEUE, mpesaCallbackMessage);
+            rabbitTemplate.convertAndSend(RabbitMQConfig.EXCHANGE, RabbitMQConfig.CALLBACK_QUEUE, stkCallbackMessage);
         } else {
-            MpesaCallbackMessage mpesaCallbackMessage = new MpesaCallbackMessage();
-            mpesaCallbackMessage.setMerchantRequestID("29115-34620561-1");
-            mpesaCallbackMessage.setTransactionID(transactionMessage.getTransactionId());
-            mpesaCallbackMessage.setCheckoutRequestID("ws_CO_191220191020363925");
-            mpesaCallbackMessage.setTransactionAmount(transactionMessage.getAmount());
-            mpesaCallbackMessage.setResultCode(1023);
-            mpesaCallbackMessage.setResultDesc("The User canceled the request");
-
-            System.out.println("Callback is:  " + mpesaCallbackMessage);
-            rabbitTemplate.convertAndSend(RabbitMQConfig.EXCHANGE, RabbitMQConfig.CALLBACK_QUEUE, mpesaCallbackMessage);
+            StkCallbackMessage stkCallbackMessage = new StkCallbackMessage().createCallbackMessage(
+                    "29115-34620561-1",
+                    "ws_CO_191220191020363925",
+                    0,
+                    "The service request is processed successfully.",
+                    0.0,
+                    transactionMessage.getPhoneNumber(),
+                    "",
+                    ""
+            );
+            rabbitTemplate.convertAndSend(RabbitMQConfig.EXCHANGE, RabbitMQConfig.CALLBACK_QUEUE, stkCallbackMessage);
         }
     }
 }
