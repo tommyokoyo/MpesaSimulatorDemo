@@ -1,5 +1,6 @@
 package com.openhub.mpesasimulatordemo.Utilities;
 
+import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
 
 public class Generator {
@@ -19,5 +20,15 @@ public class Generator {
         int segTwo = ThreadLocalRandom.current().nextInt(1000000, 9999999  + 1);
 
         return serviceCode + "_" + segOne + "_" + segTwo;
+    }
+
+    public static String transactionRefGenerator() {
+        String CHARS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+        StringBuilder builder = new StringBuilder(10);
+        Random random = new Random();
+        for (int i = 0; i < 10; i++) {
+            builder.append(CHARS.charAt(random.nextInt(CHARS.length())));
+        }
+        return "MSIM_" + builder;
     }
 }
