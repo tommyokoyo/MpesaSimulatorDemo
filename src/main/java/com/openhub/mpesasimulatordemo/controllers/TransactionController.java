@@ -21,6 +21,7 @@ public class TransactionController {
     public TransactionController(TransactionService transactionService) {
         this.transactionService = transactionService;
     }
+
     @PostMapping("/mpesa-express")
     public ResponseEntity<?> MpesaExpress(@RequestBody MpesaExpressRequest mpesaExpressRequest){
         System.out.println("Received request" + mpesaExpressRequest);
