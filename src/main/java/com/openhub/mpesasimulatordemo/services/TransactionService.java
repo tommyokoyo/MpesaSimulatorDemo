@@ -1,20 +1,28 @@
 package com.openhub.mpesasimulatordemo.services;
 
-import com.openhub.mpesasimulatordemo.Utilities.Generator;
+import com.openhub.mpesasimulatordemo.Utilities.GeneratorComponent;
 import com.openhub.mpesasimulatordemo.models.MpesaExpressRequest;
 import com.openhub.mpesasimulatordemo.models.ResponseCode;
 import com.openhub.mpesasimulatordemo.models.ResponseMessage;
 import com.openhub.mpesasimulatordemo.models.StkResponse;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
 public class TransactionService {
+    private final GeneratorComponent generatorComponent;
+
+    @Autowired
+    public TransactionService(GeneratorComponent generatorComponent) {
+        this.generatorComponent = generatorComponent;
+    }
+
     public StkResponse initiateStkPush(MpesaExpressRequest mpesaExpressRequest) {
         if (mpesaExpressRequest == null) {
             // Return Error response
             StkResponse stkResponse = new StkResponse();
-            stkResponse.setMerchantRequestID(Generator.MerchantIDGenerator());
-            stkResponse.setCheckoutRequestID(Generator.CheckoutRequestIDGenerator());
+            stkResponse.setMerchantRequestID(generatorComponent.MerchantIDGenerator());
+            stkResponse.setCheckoutRequestID(generatorComponent.CheckoutRequestIDGenerator());
             stkResponse.setResponseCode(String.valueOf(ResponseCode.FAILED));
             stkResponse.setResponseDescription(ResponseMessage.FAILED.getMessage());
             stkResponse.setCustomerMessage("Error. Could not process request");
@@ -23,8 +31,8 @@ public class TransactionService {
         } else {
             // Initiate STK push to client and send response
             StkResponse stkResponse = new StkResponse();
-            stkResponse.setMerchantRequestID(Generator.MerchantIDGenerator());
-            stkResponse.setCheckoutRequestID(Generator.CheckoutRequestIDGenerator());
+            stkResponse.setMerchantRequestID(generatorComponent.MerchantIDGenerator());
+            stkResponse.setCheckoutRequestID(generatorComponent.CheckoutRequestIDGenerator());
             stkResponse.setResponseCode(String.valueOf(ResponseCode.SUCCESS));
             stkResponse.setResponseDescription(ResponseMessage.SUCCESS.getMessage());
             stkResponse.setCustomerMessage("Success. Request accepted for processing");

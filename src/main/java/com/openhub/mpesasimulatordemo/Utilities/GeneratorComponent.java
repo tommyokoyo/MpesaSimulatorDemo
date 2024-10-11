@@ -1,10 +1,18 @@
 package com.openhub.mpesasimulatordemo.Utilities;
 
+import org.springframework.stereotype.Component;
+
 import java.util.Random;
+import java.util.UUID;
 import java.util.concurrent.ThreadLocalRandom;
 
-public class Generator {
-    public static String MerchantIDGenerator() {
+@Component
+public class GeneratorComponent {
+    public String tokenGenerator() {
+        return UUID.randomUUID().toString();
+    }
+
+    public String MerchantIDGenerator() {
         String serviceCode = "MPESA_SIM";
         // Generate five-digit number
         int segOne = ThreadLocalRandom.current().nextInt(10000, 99999 + 1);
@@ -14,7 +22,7 @@ public class Generator {
         return serviceCode + "-" + segOne + "-" + segTwo + "-" + segThree;
     }
 
-    public static String CheckoutRequestIDGenerator() {
+    public String CheckoutRequestIDGenerator() {
         String serviceCode = "MPESA_SIM";
         int segOne = ThreadLocalRandom.current().nextInt(10000, 99999 + 1);
         int segTwo = ThreadLocalRandom.current().nextInt(1000000, 9999999  + 1);
@@ -22,7 +30,7 @@ public class Generator {
         return serviceCode + "_" + segOne + "_" + segTwo;
     }
 
-    public static String transactionRefGenerator() {
+    public String transactionRefGenerator() {
         String CHARS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
         StringBuilder builder = new StringBuilder(10);
         Random random = new Random();
