@@ -16,6 +16,7 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 @Configuration
 public class AuthHeaderFilter extends OncePerRequestFilter {
@@ -46,18 +47,33 @@ public class AuthHeaderFilter extends OncePerRequestFilter {
             if (authHeader != null && authHeader.startsWith("Bearer ")) {
                 final String token = authHeader.substring(7);
                 try {
-                    List<String> access_tokens = fileHandler.readTokens();
-                    System.out.println(access_tokens);
+                    Set<String> access_tokens = fileHandler.readJSONTokens();
+                    if (access_tokens.contains(token)) {
+                        if (SecurityContextHolder.getContext().getAuthentication() == null && access_tokens.contains(token)) {
+                            UsernamePasswordAuthenticationToken authenticationToken  = new UsernamePasswordAuthenticationToken(token, null, null);
+                            SecurityContextHolder.getContext().setAuthentication(authenticationToken);
+                        }
+                    } else {
+                        response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                        response.setContentType("application/json");
 
-                    if (SecurityContextHolder.getContext().getAuthentication() == null && access_tokens.contains(token)) {
-                        UsernamePasswordAuthenticationToken authenticationToken  = new UsernamePasswordAuthenticationToken(token, null, null);
-                        SecurityContextHolder.getContext().setAuthentication(authenticationToken);
+                        // Build a JSON response
+                        Map<String, Object> responseData = new HashMap<>();
+                        responseData.put("status", "1");
+                        responseData.put("message", "Not Authorised to Access Resource");
+                        responseData.put("error", "UnAuthorized");
+
+                        ObjectMapper objectMapper = new ObjectMapper();
+                        String jsonResponse = objectMapper.writeValueAsString(responseData);
+
+                        response.getWriter().write(jsonResponse);
                     }
+
                 }
                 catch (Exception e) {
                     System.out.println("Error parsing Bearer token: " + e.getMessage());
 
-                    response.setStatus(HttpServletResponse.SC_FORBIDDEN);
+                    response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
                     response.setContentType("application/json");
 
                     // Build a JSON response
