@@ -11,10 +11,12 @@ import org.springframework.stereotype.Service;
 @Service
 public class TransactionService {
     private final GeneratorComponent generatorComponent;
+    private final TransactionQueueProcessorService transactionQueueProcessorService;
 
     @Autowired
-    public TransactionService(GeneratorComponent generatorComponent) {
+    public TransactionService(GeneratorComponent generatorComponent, TransactionQueueProcessorService transactionQueueProcessorService) {
         this.generatorComponent = generatorComponent;
+        this.transactionQueueProcessorService = transactionQueueProcessorService;
     }
 
     public StkResponse initiateStkPush(MpesaExpressRequest mpesaExpressRequest) {
@@ -29,7 +31,8 @@ public class TransactionService {
             System.out.println("Empty Object: " + stkResponse);
             return stkResponse;
         } else {
-            // Initiate STK push to client and send response
+            // Send transaction to queue to be processed
+
             StkResponse stkResponse = new StkResponse();
             stkResponse.setMerchantRequestID(generatorComponent.MerchantIDGenerator());
             stkResponse.setCheckoutRequestID(generatorComponent.CheckoutRequestIDGenerator());

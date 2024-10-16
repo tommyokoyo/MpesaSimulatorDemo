@@ -2,6 +2,7 @@ package com.openhub.mpesasimulatordemo.Utilities;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.openhub.mpesasimulatordemo.models.TransactionMessage;
 import org.springframework.stereotype.Component;
 
 import java.io.*;
@@ -11,14 +12,14 @@ import java.util.*;
 
 @Component
 public class FileHandler {
-    private final ObjectMapper objectMapper = new ObjectMapper();
+    private final String SESSIONTOKENS = "token.txt";
+    private final String JSONTOKENS = "token.json";
 
-    private final String USERCREDENTIALS = "credentials.txt";
-    private String SESSIONTOKENS = "token.txt";
-    private String JSONTOKENS = "token.json";
+    private final ObjectMapper objectMapper = new ObjectMapper();
 
     public Map<String, String> loadCredentials(String fileName) throws IOException {
         Map<String, String> credentials = new HashMap<>();
+        String USERCREDENTIALS = "credentials.txt";
         BufferedReader credentialReader = new BufferedReader(new FileReader(USERCREDENTIALS));
         String line;
 
@@ -58,5 +59,16 @@ public class FileHandler {
         credentialWriter.write(token);
         credentialWriter.newLine();
         credentialWriter.close();
+    }
+
+    public void readTransactions() throws IOException {
+        File file = new File(TRANSACTIONS);
+        if (file.exists() && file.length() > 0) {
+            return objectMapper.readValue(new File(TRANSACTIONS), new TypeReference<ArrayList<TransactionMessage>>() {});
+        }
+    }
+
+    public void saveTransaction(TransactionMessage transaction) throws IOException {
+
     }
 }

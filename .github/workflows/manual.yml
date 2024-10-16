@@ -1,32 +1,61 @@
 # This is a basic workflow that is manually triggered
 
-name: Manual workflow
-
-# Controls when the action will run. Workflow runs when manually triggered using the UI
-# or API.
+name: Build-and-Deploy
 on:
-  workflow_dispatch:
-    # Inputs the workflow accepts.
-    inputs:
-      name:
-        # Friendly description to be shown in the UI instead of 'name'
-        description: 'Person to greet'
-        # Default value if no value is explicitly provided
-        default: 'World'
-        # Input has to be provided for the workflow to run
-        required: true
-        # The data type of the input
-        type: string
+  push:
+    branches:
+      - master
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
-  # This workflow contains a single job called "greet"
-  greet:
+  build-jar:
     # The type of runner that the job will run on
     runs-on: ubuntu-latest
-
+    environment: development
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
-    # Runs a single command using the runners shell
-    - name: Send greeting
-      run: echo "Hello ${{ inputs.name }}"
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+
+    # Use a specific Java version to build the application
+      - name: Set up JDK 17
+        uses: actions/setup-java@v3
+        with:
+           java-version: '17'
+           distribution: 'temurin'
+
+      - name: Build the Java application
+        run: mvn clean install
+
+      - name: List build directory
+        run: ls -la target
+
+      - name: Upload JAR Artifact
+        uses: actions/upload-artifact@v3
+        with:
+                name: mpesasimulator
+                path: target/mpesasimulator-0.0.1-SNAPSHOT.jar
+                if-no-files-found: warn
+                include-hidden-files: false
+
+      - name: Download JAR Artifact
+        uses: actions/download-artifact@v3
+        with:
+          name: mpesasimulator
+          path: ./
+
+      - name: List build directory
+        run: ls -la target
+
+      - name: Build and tag Docker image
+        run: docker build -t ${{ secrets.DOCKER_USERNAME }}/mpesasimulator:latest .
+
+      - name: Login to docker
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+
+      # Push the Docker image to Docker Hub (or any other Docker registry)
+      - name: Push Docker image to Docker Hub
+        run: docker push ${{ secrets.DOCKER_USERNAME }}/mpesasimulator:latest
