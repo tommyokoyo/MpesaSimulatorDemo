@@ -34,7 +34,7 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
                 name: mpesasimulator
-                path: target/mpesasimulator-0.0.1-SNAPSHOT.jar
+                path: target/MpesaSimulatorDemo-0.0.1-SNAPSHOT.jar
                 if-no-files-found: warn
                 include-hidden-files: false
 
