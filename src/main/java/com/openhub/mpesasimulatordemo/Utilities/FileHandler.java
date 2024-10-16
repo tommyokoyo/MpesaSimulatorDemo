@@ -62,11 +62,12 @@ public class FileHandler {
         credentialWriter.close();
     }
 
-    public void readTransactions() throws IOException {
+    public ArrayList<TransactionMessage> readTransactions() throws IOException {
         File file = new File(TRANSACTIONS);
         if (file.exists() && file.length() > 0) {
             return objectMapper.readValue(new File(TRANSACTIONS), new TypeReference<ArrayList<TransactionMessage>>() {});
         }
+        return null;
     }
 
     public void saveTransaction(TransactionMessage transaction) throws IOException {
