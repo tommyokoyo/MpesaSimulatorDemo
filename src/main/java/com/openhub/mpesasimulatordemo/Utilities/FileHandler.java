@@ -14,6 +14,7 @@ import java.util.*;
 public class FileHandler {
     private final String SESSIONTOKENS = "token.txt";
     private final String JSONTOKENS = "token.json";
+    private final String TRANSACTIONS = "transactions.json";
 
     private final ObjectMapper objectMapper = new ObjectMapper();
 
