@@ -42,7 +42,6 @@ public class TransactionQueueProcessorService {
             System.out.println("[-] Error while processing transaction: " + e.getMessage());
             throw new RuntimeException(e);
         }
-
     }
 
     public void addTransaction(TransactionMessage transactionMessage) {
