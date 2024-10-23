@@ -1,8 +1,7 @@
 package com.openhub.mpesasimulatordemo.services;
 
-import com.openhub.mpesasimulatordemo.models.CallbackResponse;
-import com.openhub.mpesasimulatordemo.models.MpesaExpressRequest;
-import com.openhub.mpesasimulatordemo.models.StkCallbackMessage;
+import com.openhub.mpesasimulatordemo.models.MsimStkCallbackResponse;
+import com.openhub.mpesasimulatordemo.models.MsimStkCallbackRequest;
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 import io.github.resilience4j.retry.annotation.Retry;
 import org.springframework.stereotype.Service;
@@ -24,21 +23,21 @@ public class CallbackService {
 
     @Retry(name = "StkCallbackRequest", fallbackMethod = "fallBackMpesaRequest")
     @CircuitBreaker(name = "StkCallBackCircuitBreaker", fallbackMethod = "fallBackMpesaRequest")
-    public Mono<CallbackResponse> stkCallback(StkCallbackMessage stkCallbackMessage, String url) {
+    public Mono<MsimStkCallbackResponse> stkCallback(MsimStkCallbackRequest msimStkCallbackRequest, String url) {
         WebClient webClient = getWebClient(url);
         return webClient.post()
-                .bodyValue(stkCallbackMessage)
+                .bodyValue(msimStkCallbackRequest)
                 .retrieve()
-                .bodyToMono(CallbackResponse.class)
+                .bodyToMono(MsimStkCallbackResponse.class)
                 .onErrorResume(WebClientResponseException.class, this::handleWebclientException);
     }
 
-    private Mono<CallbackResponse> handleWebclientException(WebClientResponseException e) {
-        CallbackResponse callbackResponse = e.getResponseBodyAs(CallbackResponse.class);
-        if (callbackResponse != null) {
-            return Mono.just(callbackResponse);
+    private Mono<MsimStkCallbackResponse> handleWebclientException(WebClientResponseException e) {
+        MsimStkCallbackResponse msimStkCallbackResponse = e.getResponseBodyAs(MsimStkCallbackResponse.class);
+        if (msimStkCallbackResponse != null) {
+            return Mono.just(msimStkCallbackResponse);
         } else {
-            CallbackResponse errorResponse = new CallbackResponse();
+            MsimStkCallbackResponse errorResponse = new MsimStkCallbackResponse();
             System.out.println("Ërror response Body: " + errorResponse);
             errorResponse.setStatus("1");
             errorResponse.setMessage("Service Error");

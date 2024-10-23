@@ -1,10 +1,10 @@
 package com.openhub.mpesasimulatordemo.controllers;
 
 import com.openhub.mpesasimulatordemo.Utilities.ResponseUtil;
-import com.openhub.mpesasimulatordemo.models.MpesaExpressRequest;
+import com.openhub.mpesasimulatordemo.models.MsimStkRequest;
 import com.openhub.mpesasimulatordemo.models.ResponseCode;
 import com.openhub.mpesasimulatordemo.models.ResponseMessage;
-import com.openhub.mpesasimulatordemo.models.StkResponse;
+import com.openhub.mpesasimulatordemo.models.MsimStkResponse;
 import com.openhub.mpesasimulatordemo.services.TransactionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -23,9 +23,9 @@ public class TransactionController {
     }
 
     @PostMapping("/mpesa-express")
-    public ResponseEntity<?> MpesaExpress(@RequestBody MpesaExpressRequest mpesaExpressRequest){
-        System.out.println("Received request" + mpesaExpressRequest);
-        if (mpesaExpressRequest.getBusinessShortCode() == null || mpesaExpressRequest.getBusinessShortCode().isEmpty()){
+    public ResponseEntity<?> MpesaExpress(@RequestBody MsimStkRequest msimStkRequest){
+        System.out.println("[-] Request received for processing: " + msimStkRequest);
+        if (msimStkRequest.getBusinessShortCode() == null || msimStkRequest.getBusinessShortCode().isEmpty()){
             return ResponseUtil.buildErrorResponse(
                     HttpStatus.BAD_REQUEST,
                     ResponseCode.FAILED,
@@ -33,7 +33,7 @@ public class TransactionController {
                     "Business short code is required"
             );
         }
-        else if (mpesaExpressRequest.getPassword() == null || mpesaExpressRequest.getPassword().isEmpty()){
+        else if (msimStkRequest.getPassword() == null || msimStkRequest.getPassword().isEmpty()){
             return ResponseUtil.buildErrorResponse(
                     HttpStatus.BAD_REQUEST,
                     ResponseCode.FAILED,
@@ -41,7 +41,7 @@ public class TransactionController {
                     "Password is required"
             );
         }
-        else if (mpesaExpressRequest.getTimestamp() == null || mpesaExpressRequest.getTimestamp().isEmpty()) {
+        else if (msimStkRequest.getTimestamp() == null || msimStkRequest.getTimestamp().isEmpty()) {
             return ResponseUtil.buildErrorResponse(
                     HttpStatus.BAD_REQUEST,
                     ResponseCode.FAILED,
@@ -49,7 +49,7 @@ public class TransactionController {
                     "Timestamp is required"
             );
         }
-        else if (mpesaExpressRequest.getTransactionType() == null|| mpesaExpressRequest.getTransactionType().isEmpty()) {
+        else if (msimStkRequest.getTransactionType() == null|| msimStkRequest.getTransactionType().isEmpty()) {
             return ResponseUtil.buildErrorResponse(
                     HttpStatus.BAD_REQUEST,
                     ResponseCode.FAILED,
@@ -57,7 +57,7 @@ public class TransactionController {
                     "Transaction Type is required"
             );
         }
-        else if (mpesaExpressRequest.getAmount() == null || mpesaExpressRequest.getAmount().isEmpty()){
+        else if (msimStkRequest.getAmount() == null || msimStkRequest.getAmount().isEmpty()){
             return ResponseUtil.buildErrorResponse(
                     HttpStatus.BAD_REQUEST,
                     ResponseCode.FAILED,
@@ -65,7 +65,7 @@ public class TransactionController {
                     "Amount is required"
             );
         }
-        else if (mpesaExpressRequest.getPartyA() == null || mpesaExpressRequest.getPartyA().isEmpty()){
+        else if (msimStkRequest.getPartyA() == null || msimStkRequest.getPartyA().isEmpty()){
             return ResponseUtil.buildErrorResponse(
                     HttpStatus.BAD_REQUEST,
                     ResponseCode.FAILED,
@@ -73,7 +73,7 @@ public class TransactionController {
                     "Party A is required"
             );
         }
-        else if (mpesaExpressRequest.getPartyB() == null || mpesaExpressRequest.getPartyB().isEmpty()){
+        else if (msimStkRequest.getPartyB() == null || msimStkRequest.getPartyB().isEmpty()){
             return ResponseUtil.buildErrorResponse(
                     HttpStatus.BAD_REQUEST,
                     ResponseCode.FAILED,
@@ -81,7 +81,7 @@ public class TransactionController {
                     "Party B is required"
             );
         }
-        else if (mpesaExpressRequest.getPhoneNumber() == null || mpesaExpressRequest.getPhoneNumber().isEmpty()){
+        else if (msimStkRequest.getPhoneNumber() == null || msimStkRequest.getPhoneNumber().isEmpty()){
             return ResponseUtil.buildErrorResponse(
                     HttpStatus.BAD_REQUEST,
                     ResponseCode.FAILED,
@@ -89,7 +89,7 @@ public class TransactionController {
                     "Phone Number is required"
             );
         }
-        else if (mpesaExpressRequest.getCallBackURL() == null || mpesaExpressRequest.getCallBackURL().isEmpty()){
+        else if (msimStkRequest.getCallBackURL() == null || msimStkRequest.getCallBackURL().isEmpty()){
             return ResponseUtil.buildErrorResponse(
                     HttpStatus.BAD_REQUEST,
                     ResponseCode.FAILED,
@@ -97,7 +97,7 @@ public class TransactionController {
                     "Callback URL is required"
             );
         }
-        else if (mpesaExpressRequest.getAccountReference() == null || mpesaExpressRequest.getAccountReference().isEmpty()){
+        else if (msimStkRequest.getAccountReference() == null || msimStkRequest.getAccountReference().isEmpty()){
             return ResponseUtil.buildErrorResponse(
                     HttpStatus.BAD_REQUEST,
                     ResponseCode.FAILED,
@@ -105,7 +105,7 @@ public class TransactionController {
                     "Account Reference is required"
             );
         }
-        else if (mpesaExpressRequest.getTransactionDesc() == null || mpesaExpressRequest.getTransactionDesc().isEmpty()){
+        else if (msimStkRequest.getTransactionDesc() == null || msimStkRequest.getTransactionDesc().isEmpty()){
             return ResponseUtil.buildErrorResponse(
                     HttpStatus.BAD_REQUEST,
                     ResponseCode.FAILED,
@@ -114,7 +114,7 @@ public class TransactionController {
             );
         }
         // Mimic Transaction initiation and return response
-        StkResponse stkResponse = transactionService.initiateStkPush(mpesaExpressRequest);
-         return ResponseEntity.status(HttpStatus.OK).body(stkResponse);
+        MsimStkResponse msimStkResponse = transactionService.initiateStkPush(msimStkRequest);
+         return ResponseEntity.status(HttpStatus.OK).body(msimStkResponse);
     }
 }

@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 
 @Data
-public class MpesaExpressRequest {
+public class MsimStkRequest {
     @JsonProperty("BusinessShortCode")
     private String BusinessShortCode;
     @JsonProperty("Password")

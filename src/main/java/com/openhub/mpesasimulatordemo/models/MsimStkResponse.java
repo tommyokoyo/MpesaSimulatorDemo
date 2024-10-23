@@ -3,7 +3,7 @@ package com.openhub.mpesasimulatordemo.models;
 import lombok.Data;
 
 @Data
-public class StkResponse {
+public class MsimStkResponse {
     private String MerchantRequestID;
     private String CheckoutRequestID;
     private String ResponseCode;
