@@ -10,17 +10,28 @@ import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+/**
+ * This service file contains methods that read and manipulate data on the queues
+ *
+ * @author Thomas Okoyo
+ * @version 1.0
+ */
 @Service
-public class TransactionQueueProcessor {
+public class QueueProcessors {
     private final RabbitTemplate rabbitTemplate;
     private final CallbackService callbackService;
 
     @Autowired
-    public TransactionQueueProcessor(RabbitTemplate rabbitTemplate, CallbackService callbackService) {
+    public QueueProcessors(RabbitTemplate rabbitTemplate, CallbackService callbackService) {
         this.rabbitTemplate = rabbitTemplate;
         this.callbackService = callbackService;
     }
 
+    /**
+     * This method reads from the TRANSACTION_QUEUE and writes to the CALLBACK_QUEUE
+     *
+     * @param transactionMessage request transaction Information
+     */
     @RabbitListener(queues = RabbitMQConfiguration.TRANSACTION_QUEUE)
     public void processTransaction(TransactionMessage transactionMessage) {
         System.out.println("[-] Received transaction for processing with CheckoutRequestID: " + transactionMessage.getCheckOutRequestID());
@@ -34,6 +45,11 @@ public class TransactionQueueProcessor {
         }
     }
 
+    /**
+     * This method reads from the CALLBACK_QUEUE and sends Callbacks
+     *
+     * @param msimCallbackMessage callback requests details
+     */
     @RabbitListener(queues = RabbitMQConfiguration.CALLBACK_QUEUE)
     public void processCallback(MsimCallbackMessage msimCallbackMessage) {
         System.out.println("[-] Received Callback for processing with CheckoutRequestID: " + msimCallbackMessage.getCheckoutRequestID());

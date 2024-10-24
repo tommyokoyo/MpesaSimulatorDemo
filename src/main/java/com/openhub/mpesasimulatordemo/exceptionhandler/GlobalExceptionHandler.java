@@ -13,6 +13,12 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.servlet.resource.NoResourceFoundException;
 
+/**
+ * This class handles all exceptions related to
+ *
+ * @author Thomas Okoyo
+ * @version 1.0
+ */
 @ControllerAdvice
 public class GlobalExceptionHandler {
     @ExceptionHandler(NoResourceFoundException.class)

@@ -8,6 +8,12 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+/**
+ * This class handles authentication and token generation
+ *
+ * @author Thomas Okoyo
+ * @version 1.0
+ */
 @Service
 public class AuthenticationService {
     private final GeneratorComponent generatorComponent;
@@ -19,6 +25,15 @@ public class AuthenticationService {
         this.fileHandler = fileHandler;
     }
 
+    /**
+     * This method validates the parameters username
+     * and password then generates an access token
+     *
+     * @param username Users' username
+     * @param password Users' password
+     *
+     * @return ResponseEntity object
+     */
     public ResponseEntity<?> authenticateUser(String username, String password) {
         if (username.equals("okoyo") && password.equals("password")) {
             AuthenticationResponse authenticationResponse = new AuthenticationResponse();

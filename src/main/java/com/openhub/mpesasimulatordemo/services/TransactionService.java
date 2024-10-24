@@ -9,6 +9,9 @@ import com.openhub.mpesasimulatordemo.models.MsimStkResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+/**
+ * This service class contains method to initiate stkPush
+ */
 @Service
 public class TransactionService {
     private final MessageHandler messageHandler;

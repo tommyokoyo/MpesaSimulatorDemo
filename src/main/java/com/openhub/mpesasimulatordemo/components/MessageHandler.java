@@ -13,7 +13,6 @@ import org.springframework.stereotype.Component;
  *
  * @author Thomas Okoyo
  * @version 1.0
- * @since 2024
  */
 @Component
 public class MessageHandler {
