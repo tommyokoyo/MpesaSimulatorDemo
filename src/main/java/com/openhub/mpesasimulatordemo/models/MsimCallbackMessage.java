@@ -1,5 +1,6 @@
 package com.openhub.mpesasimulatordemo.models;
 
+import com.openhub.mpesasimulatordemo.entities.TransactionMessage;
 import lombok.Data;
 
 import java.util.ArrayList;

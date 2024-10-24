@@ -2,7 +2,7 @@ package com.openhub.mpesasimulatordemo.Utilities;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.openhub.mpesasimulatordemo.models.TransactionMessage;
+import com.openhub.mpesasimulatordemo.entities.TransactionMessage;
 import org.springframework.stereotype.Component;
 
 import java.io.*;

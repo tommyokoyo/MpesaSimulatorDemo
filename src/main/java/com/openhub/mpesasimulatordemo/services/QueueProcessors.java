@@ -1,55 +1,48 @@
 package com.openhub.mpesasimulatordemo.services;
 
 import com.openhub.mpesasimulatordemo.configuration.RabbitMQConfiguration;
+import com.openhub.mpesasimulatordemo.entities.TransactionMessage;
 import com.openhub.mpesasimulatordemo.models.MsimCallbackMessage;
+import com.openhub.mpesasimulatordemo.entities.CallBackMessage;
 import com.openhub.mpesasimulatordemo.models.MsimStkCallbackRequest;
 import com.openhub.mpesasimulatordemo.models.MsimStkCallbackResponse;
-import com.openhub.mpesasimulatordemo.models.TransactionMessage;
+import com.openhub.mpesasimulatordemo.repository.CallbackRepository;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-/**
- * This service file contains methods that read and manipulate data on the queues
- *
- * @author Thomas Okoyo
- * @version 1.0
- */
 @Service
-public class QueueProcessors {
+public class TransactionQueueProcessor {
     private final RabbitTemplate rabbitTemplate;
     private final CallbackService callbackService;
+    private final CallbackRepository callbackRepository;
 
     @Autowired
-    public QueueProcessors(RabbitTemplate rabbitTemplate, CallbackService callbackService) {
+    public TransactionQueueProcessor(RabbitTemplate rabbitTemplate, CallbackService callbackService, CallbackRepository callbackRepository) {
         this.rabbitTemplate = rabbitTemplate;
         this.callbackService = callbackService;
+        this.callbackRepository = callbackRepository;
     }
 
-    /**
-     * This method reads from the TRANSACTION_QUEUE and writes to the CALLBACK_QUEUE
-     *
-     * @param transactionMessage request transaction Information
-     */
     @RabbitListener(queues = RabbitMQConfiguration.TRANSACTION_QUEUE)
     public void processTransaction(TransactionMessage transactionMessage) {
         System.out.println("[-] Received transaction for processing with CheckoutRequestID: " + transactionMessage.getCheckOutRequestID());
-        MsimCallbackMessage msimCallbackMessage = new MsimCallbackMessage();
-        msimCallbackMessage = msimCallbackMessage.createCallbackMessage(transactionMessage);
+        CallBackMessage msimcallbackMessage = new CallBackMessage();
+        msimcallbackMessage = msimcallbackMessage.createCallbackMessage(transactionMessage);
         try {
-            rabbitTemplate.convertAndSend(RabbitMQConfiguration.CALLBACK_QUEUE, msimCallbackMessage);
+            rabbitTemplate.convertAndSend(RabbitMQConfiguration.CALLBACK_QUEUE, msimcallbackMessage);
             System.out.println("[-] Transaction : " + transactionMessage.getCheckOutRequestID()+ " added to the callback queue");
+            try {
+                callbackRepository.save(msimcallbackMessage);
+            } catch (Exception e) {
+                System.out.println("[-] Error writing callback message: " + e.getMessage());
+            }
         } catch (Exception e) {
             System.out.println("[-] Error writing to call back queue: " + e.getMessage());
         }
     }
 
-    /**
-     * This method reads from the CALLBACK_QUEUE and sends Callbacks
-     *
-     * @param msimCallbackMessage callback requests details
-     */
     @RabbitListener(queues = RabbitMQConfiguration.CALLBACK_QUEUE)
     public void processCallback(MsimCallbackMessage msimCallbackMessage) {
         System.out.println("[-] Received Callback for processing with CheckoutRequestID: " + msimCallbackMessage.getCheckoutRequestID());
