@@ -13,13 +13,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
-public class TransactionQueueProcessor {
+public class QueueProcessors {
     private final RabbitTemplate rabbitTemplate;
     private final CallbackService callbackService;
     private final CallbackRepository callbackRepository;
 
     @Autowired
-    public TransactionQueueProcessor(RabbitTemplate rabbitTemplate, CallbackService callbackService, CallbackRepository callbackRepository) {
+    public QueueProcessors(RabbitTemplate rabbitTemplate, CallbackService callbackService, CallbackRepository callbackRepository) {
         this.rabbitTemplate = rabbitTemplate;
         this.callbackService = callbackService;
         this.callbackRepository = callbackRepository;
