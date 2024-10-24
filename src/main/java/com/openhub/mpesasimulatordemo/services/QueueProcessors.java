@@ -36,7 +36,7 @@ public class QueueProcessors {
             try {
                 callbackRepository.save(msimcallbackMessage);
             } catch (Exception e) {
-                System.out.println("[-] Error writing callback message: " + e.getMessage());
+                System.out.println("[-] Error writing callback message to database: " + e.getMessage());
             }
         } catch (Exception e) {
             System.out.println("[-] Error writing to call back queue: " + e.getMessage());
