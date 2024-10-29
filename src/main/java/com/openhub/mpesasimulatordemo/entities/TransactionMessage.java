@@ -6,11 +6,7 @@ import lombok.Data;
 @Data
 @Entity
 @Table(
-        name = "transactionmessage",
-        uniqueConstraints = {
-                @UniqueConstraint(name = "merchant_RequestID_constraint", columnNames = "merchantrequestid"),
-                @UniqueConstraint(name = "checkout_RequestID_constraint", columnNames = "checkoutrequestid"),
-        }
+        name = "transaction_message"
 )
 public class TransactionMessage {
     @Id

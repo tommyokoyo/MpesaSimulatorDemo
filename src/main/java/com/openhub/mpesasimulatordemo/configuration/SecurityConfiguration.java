@@ -3,6 +3,7 @@ package com.openhub.mpesasimulatordemo.configuration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.web.SecurityFilterChain;
 
 /**
@@ -28,7 +29,8 @@ public class SecurityConfiguration {
         http.csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(authorizeRequests -> authorizeRequests
                         .requestMatchers("/*").permitAll()
-                        .anyRequest().permitAll());
+                        .requestMatchers("/h2-console/**").permitAll()
+                        .anyRequest().permitAll()).headers(AbstractHttpConfigurer::disable);
 
         return http.build();
     }
