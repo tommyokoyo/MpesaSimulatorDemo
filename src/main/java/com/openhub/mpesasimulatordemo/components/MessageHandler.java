@@ -5,6 +5,7 @@ import com.openhub.mpesasimulatordemo.configuration.RabbitMQConfiguration;
 import com.openhub.mpesasimulatordemo.entities.TransactionMessage;
 import com.openhub.mpesasimulatordemo.models.*;
 import com.openhub.mpesasimulatordemo.repository.TransactionRepository;
+import com.openhub.mpesasimulatordemo.services.QueueService;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -19,13 +20,13 @@ import org.springframework.stereotype.Component;
 @Component
 public class MessageHandler {
     private final GeneratorComponent generatorComponent;
-    private final RabbitTemplate rabbitTemplate;
+    private final QueueService queueService;
     private final TransactionRepository transactionRepository;
 
     @Autowired
-    public MessageHandler(GeneratorComponent generatorComponent, RabbitTemplate rabbitTemplate, TransactionRepository transactionRepository) {
+    public MessageHandler(GeneratorComponent generatorComponent, QueueService queueService, TransactionRepository transactionRepository) {
         this.generatorComponent = generatorComponent;
-        this.rabbitTemplate = rabbitTemplate;
+        this.queueService = queueService;
         this.transactionRepository = transactionRepository;
     }
 
@@ -86,7 +87,7 @@ public class MessageHandler {
 
         // Add transaction to queue for processing
         try {
-            rabbitTemplate.convertAndSend(RabbitMQConfiguration.TRANSACTION_QUEUE, transactionMessage);
+            queueService.addTransactionToQueue("transactionQueue",transactionMessage);
             try{
                 // write transaction to Database
                 transactionRepository.save(transactionMessage);
@@ -111,7 +112,7 @@ public class MessageHandler {
             }
 
         } catch (Exception e) {
-            System.out.println("[-] Error adding transaction"+ transactionMessage.getCheckOutRequestID() +"to queue");
+            System.out.println("[-] Error adding transaction "+ transactionMessage.getCheckOutRequestID() +"to queue");
             MsimStkResponse msimStkResponse = new MsimStkResponse();
             msimStkResponse.setMerchantRequestID(transactionMessage.getMerchantRequestID());
             msimStkResponse.setCheckoutRequestID(transactionMessage.getCheckOutRequestID());
