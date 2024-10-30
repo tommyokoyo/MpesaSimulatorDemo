@@ -5,14 +5,14 @@
 This project is a **replica of the M-Pesa Daraja APIs** but designed to run in an **offline environment**. It serves as a learning tool to understand how **microservices communicate** with each other and provides a local, offline version of the M-Pesa Daraja APIs for **testing purposes**.
 
 ### Key Features:
-- Offline M-Pesa API simulator for local testing
+- **Offline M-Pesa API simulator** for local testing
 - **Microservice architecture** with two queues:
     - **Transaction Queue**: Handles incoming transactions.
-    - **Dispatch Queue**: Sends callbacks for transaction responses.
-- **RabbitMQ** is used to manage and run the queues, simulating real-world transaction workflows.
+    - **Callback Queue**: Sends callbacks for transaction responses.
+- **BlockingQueue** is used to manage and run the queues, simulating real-world transaction workflows.
 
 This application helps you to:
-- Learn microservice communication patterns.
+- Learn microservice communication patterns (when Included with the C2B service api).
 - Simulate **M-Pesa Daraja API** interactions in your local environment.
 - Test API integrations without requiring access to the actual M-Pesa API.
 
@@ -35,6 +35,5 @@ The API is built with **Spring Boot** and is containerized into a **Docker image
 ## Technologies Used
 - **Java** for the core application.
 - **Spring Boot** for building the API.
-- **RabbitMQ** for managing the transaction and dispatch queues.
 - **Docker** for containerization and easy deployment.
 - **GitHub Actions** for CI/CD and automating Docker builds and deployments.

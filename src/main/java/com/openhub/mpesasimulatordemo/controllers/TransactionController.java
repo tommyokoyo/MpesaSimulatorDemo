@@ -1,16 +1,17 @@
 package com.openhub.mpesasimulatordemo.controllers;
 
 import com.openhub.mpesasimulatordemo.Utilities.ResponseUtil;
-import com.openhub.mpesasimulatordemo.models.MsimStkRequest;
-import com.openhub.mpesasimulatordemo.models.ResponseCode;
-import com.openhub.mpesasimulatordemo.models.ResponseMessage;
-import com.openhub.mpesasimulatordemo.models.MsimStkResponse;
+import com.openhub.mpesasimulatordemo.models.*;
 import com.openhub.mpesasimulatordemo.services.TransactionService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import static org.springframework.http.ResponseEntity.status;
+
+@Slf4j
 @RestController
 @RequestMapping("/mpesa-sim/transaction")
 public class TransactionController {
@@ -115,6 +116,12 @@ public class TransactionController {
         }
         // Mimic Transaction initiation and return response
         MsimStkResponse msimStkResponse = transactionService.initiateStkPush(msimStkRequest);
-         return ResponseEntity.status(HttpStatus.OK).body(msimStkResponse);
+         return status(HttpStatus.OK).body(msimStkResponse);
+    }
+
+    @PostMapping("/transaction-status")
+    public ResponseEntity<?> TransactionStatus(@RequestBody TransactionStatusQueryRequest transactionStatusQueryRequest){
+        log.info("Received transaction for processing {}", transactionStatusQueryRequest);
+        return ResponseEntity.status(HttpStatus.OK).body(transactionStatusQueryRequest);
     }
 }
