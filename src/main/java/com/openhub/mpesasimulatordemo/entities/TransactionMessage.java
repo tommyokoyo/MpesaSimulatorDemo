@@ -31,12 +31,6 @@ public class TransactionMessage {
     )
     private String transactionType;
     @Column(
-            name = "amount",
-            nullable = false,
-            columnDefinition = "VARCHAR(150)"
-    )
-    private Double amount;
-    @Column(
             name = "partya",
             nullable = false,
             columnDefinition = "VARCHAR(150)"
@@ -54,6 +48,12 @@ public class TransactionMessage {
             columnDefinition = "VARCHAR(150)"
     )
     private String phoneNumber;
+    @Column(
+            name = "amount",
+            nullable = false,
+            columnDefinition = "VARCHAR(150)"
+    )
+    private Double amount;
     @Column(
             name = "callbackurl",
             nullable = false,

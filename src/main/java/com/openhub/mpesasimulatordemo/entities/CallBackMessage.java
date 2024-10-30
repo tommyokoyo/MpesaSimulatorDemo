@@ -36,39 +36,28 @@ public class CallBackMessage {
             columnDefinition = "VARCHAR(150)"
     )
     private String ResultDesc;
-    
+    @Column(
+            name = "transactionreference",
+            nullable = false,
+            unique = true,
+            columnDefinition = "VARCHAR(150)"
+    )
+    private String transactionReference;
     @Column(
             name = "callbackurl",
             nullable = false,
             columnDefinition = "VARCHAR(150)"
     )
     private String callbackUrl;
-    
-    @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "merchantrequestid")
-    private TransactionData transactionData;
 
-    public CallBackMessage createCallbackMessage(TransactionMessage transactionMessage) {
-        TransactionData transactionData = getTransactionData(transactionMessage);
-
-        CallBackMessage message = new CallBackMessage();
-        message.setMerchantRequestID(transactionMessage.getMerchantRequestID());
-        message.setCheckoutRequestID(transactionMessage.getCheckOutRequestID());
-        message.setResultCode(0);
-        message.setResultDesc(transactionMessage.getTransactionDescription());
-        message.setCallbackUrl(transactionMessage.getCallBackUrl());
-        message.setTransactionData(transactionData);
-        return message;
-    }
-
-    private static TransactionData getTransactionData(TransactionMessage transactionMessage) {
-        TransactionData transactionData = new TransactionData();
-        transactionData.setMerchantRequestID(transactionMessage.getMerchantRequestID());
-        transactionData.setCheckoutRequestID(transactionMessage.getCheckOutRequestID());
-        transactionData.setAmount(Double.parseDouble(transactionMessage.getAmount().toString()));
-        transactionData.setMpesaReceiptNumber(transactionMessage.getAccountReference());
-        transactionData.setTransactionDate(transactionMessage.getTransactionDescription());
-        transactionData.setPhoneNumber(transactionMessage.getPhoneNumber());
-        return transactionData;
+    public CallBackMessage createCallbackMessage(TransactionMetaData transactionMetaData) {
+        CallBackMessage callBackMessage = new CallBackMessage();
+        callBackMessage.setMerchantRequestID(transactionMetaData.getMerchantRequestID());
+        callBackMessage.setCheckoutRequestID(transactionMetaData.getCheckoutRequestID());
+        callBackMessage.setTransactionReference(transactionMetaData.getMpesaReceiptNumber());
+        callBackMessage.setResultCode(Integer.parseInt(transactionMetaData.getResultCode()));
+        callBackMessage.setResultDesc(transactionMetaData.getResultDescription());
+        callBackMessage.setCallbackUrl(transactionMetaData.getCallBackUrl());
+        return callBackMessage;
     }
 }
